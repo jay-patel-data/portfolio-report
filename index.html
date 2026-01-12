@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client ABC Portfolio Review Report - January 2026</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .page {
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            page-break-after: always;
+            padding: 60px 50px;
+            min-height: 1400px;
+        }
+        
+        .page.cover {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            padding: 80px 50px;
+        }
+        
+        .cover-header {
+            margin-top: 60px;
+        }
+        
+        .cover-header h1 {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+        }
+        
+        .cover-header p {
+            font-size: 18px;
+            margin: 10px 0;
+            opacity: 0.95;
+        }
+        
+        .cover-tagline {
+            background: rgba(255,255,255,0.1);
+            padding: 20px 30px;
+            border-left: 4px solid #2196F3;
+            margin: 40px 0;
+            font-size: 16px;
+            font-style: italic;
+        }
+        
+        .cover-advisor {
+            margin-top: auto;
+            text-align: left;
+            background: rgba(255,255,255,0.05);
+            padding: 30px 40px;
+            border-radius: 8px;
+            width: 100%;
+        }
+        
+        .cover-advisor h3 {
+            font-size: 14px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .cover-advisor p {
+            font-size: 14px;
+            margin: 8px 0;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1a1a2e;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #2196F3;
+            padding-bottom: 15px;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .summary-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .summary-card.alert {
+            border-left-color: #ff6b6b;
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+        }
+        
+        .summary-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        
+        .summary-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1a1a2e;
+            margin-bottom: 5px;
+        }
+        
+        .summary-subtitle {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .alert-badge {
+            display: inline-block;
+            background: #ff6b6b;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .description-box {
+            background: #f0f4f8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            line-height: 1.8;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        .asset-allocation-container {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+            margin-top: 30px;
+        }
+        
+        .pie-chart-container {
+            flex: 1;
+            height: 300px;
+            position: relative;
+            min-width: 300px;
+        }
+        
+        .allocation-legend {
+            flex: 1;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            margin-right: 12px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 13px;
+        }
+        
+        table thead {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+        }
+        
+        table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid #ddd;
+        }
+        
+        table td {
+            padding: 12px 15px;
+            border: 1px solid #eee;
+        }
+        
+        table tbody tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        table tbody tr:hover {
+            background: #f0f4f8;
+        }
+        
+        .amc-chart-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+            align-items: flex-start;
+        }
+        
+        .chart-wrapper {
+            height: 350px;
+            position: relative;
+            min-width: 300px;
+        }
+        
+        .marketcap-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .marketcap-pie {
+            height: 300px;
+            position: relative;
+            min-width: 300px;
+        }
+        
+        .marketcap-text {
+            padding: 20px;
+        }
+        
+        .bar-item {
+            margin-bottom: 15px;
+        }
+        
+        .bar-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+        
+        .bar-track {
+            background: #e0e0e0;
+            height: 25px;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .bar-fill {
+            height: 100%;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            padding-right: 10px;
+        }
+        
+        .bar-large { background: #2196F3; }
+        .bar-mid { background: #4CAF50; }
+        .bar-small { background: #FF9800; }
+        
+        .positioning-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .positioning-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .positioning-card h4 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #1a1a2e;
+            font-weight: 600;
+        }
+        
+        .positioning-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2196F3;
+            margin-bottom: 5px;
+        }
+        
+        .positioning-badge {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1565c0;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .page-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .page-number {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        @media (max-width: 1024px) {
+            .page {
+                padding: 40px 30px;
+            }
+            
+            .summary-grid,
+            .amc-chart-container,
+            .marketcap-container,
+            .positioning-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .asset-allocation-container {
+                flex-direction: column;
+            }
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .page {
+                margin: 0;
+                box-shadow: none;
+                page-break-inside: avoid;
+            }
+        }
+        
+        .subheading {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin: 25px 0 15px 0;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- PAGE 1: COVER -->
+<div class="page cover">
+    <div class="cover-header">
+        <h1>Portfolio Review Report</h1>
+        <p style="font-size: 20px; margin-top: 20px;">Mutual Fund Exposure. Measured. Benchmarked. Improved.</p>
+    </div>
+    
+    <div class="cover-tagline">
+        <strong>"Building Wealth with Trust and Discipline, for Your Future."</strong>
+    </div>
+    
+    <div style="margin: 60px 0; font-size: 16px;">
+        <p><strong>Prepared For:</strong> KAUSHIK PRAHLADBHAI PATEL</p>
+        <p style="margin-top: 15px;"><strong>Date:</strong> January 12, 2026</p>
+    </div>
+    
+    <div class="cover-advisor">
+        <h3>Prepared By</h3>
+        <p><strong>BHUMESH ADVISORY PARTNERS</strong></p>
+        <p>ARN: 347883</p>
+        <p>Email: advisory@bhumesh.co.in</p>
+        <p style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 15px;">
+            <strong>Powered by</strong><br>
+            BHUMESH INVESTMENT ADVISORY
+        </p>
+    </div>
+</div>
+
+<!-- PAGE 2: EXECUTIVE SUMMARY -->
+<div class="page">
+    <div class="page-title">Executive Summary</div>
+    
+    <div class="summary-grid">
+        <div class="summary-card">
+            <div class="summary-label">Invested Value</div>
+            <div class="summary-value">₹14,41,333</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-label">Current Value</div>
+            <div class="summary-value">₹26,01,232</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-label">Portfolio Gains</div>
+            <div class="summary-value">₹11,59,899</div>
+        </div>
+        <div class="summary-card alert">
+            <div class="alert-badge">✓ OUTPERFORMING</div>
+            <div class="summary-label">Portfolio XIRR</div>
+            <div class="summary-value">15.56%</div>
+        </div>
+    </div>
+    
+    <div class="summary-grid">
+        <div class="summary-card">
+            <div class="summary-label">Benchmark XIRR</div>
+            <div class="summary-value">14.20%</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-label">Outperformance</div>
+            <div class="summary-value" style="color: #4CAF50;">+1.36%</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-label">Unrealised LTCG</div>
+            <div class="summary-value">₹10,80,500</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-label">Unrealised STCG</div>
+            <div class="summary-value">₹79,399</div>
+        </div>
+    </div>
+    
+    <div class="summary-grid">
+        <div class="summary-card">
+            <div class="summary-label">Absolute Return</div>
+            <div class="summary-value" style="color: #2196F3;">80.47%</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-label">Number of Unique Schemes</div>
+            <div class="summary-value">17</div>
+        </div>
+    </div>
+    
+    <div class="description-box">
+        <strong>Portfolio Overview:</strong> Your portfolio, valued at ₹26,01,232 against an investment of ₹14,41,333, has generated an absolute return of 80.47% with an outstanding XIRR of 15.56% p.a. This substantially outperforms the benchmark XIRR of 14.20%, beating the market by 136 basis points. The portfolio demonstrates excellent fund selection and strategic positioning across 17 unique equity schemes with strong focus on long-term value creation and risk-adjusted returns. Your unrealised gains of ₹10,80,500 (LTCG) are well-positioned for continued compounding over your investment horizon.
+    </div>
+    
+    <div class="subheading">Asset Allocation</div>
+    
+    <div class="asset-allocation-container">
+        <div class="pie-chart-container">
+            <canvas id="assetAllocationChart"></canvas>
+        </div>
+        <div class="allocation-legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #2196F3;"></div>
+                <span><strong>Equity:</strong> 85.8% (₹22,32,164)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #FF9800;"></div>
+                <span><strong>Hybrid/Multi-Asset:</strong> 14.2% (₹3,69,068)</span>
+            </div>
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e0e0e0;">
+                <p style="font-size: 13px; color: #666; line-height: 1.8;">
+                    <strong>Note:</strong> The portfolio maintains a strong equity-focused allocation at 85.8%, with controlled allocation to hybrid/multi-asset funds at 14.2%. This positioning aligns with long-term wealth creation while maintaining some downside protection through strategic hybrid exposure.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="page-footer">
+        <p>Portfolio Review Report | Client ABC | January 2026</p>
+        <p>For confidential use only. Distribution restricted to named client and advisory team.</p>
+    </div>
+    
+    <div class="page-number">-2 / 5-</div>
+</div>
+
+<!-- PAGE 3: PORTFOLIO ALLOCATION BREAKDOWN -->
+<div class="page">
+    <div class="page-title">Portfolio Allocation Breakdown</div>
+    
+    <div class="subheading">AMC-Wise Exposure</div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Asset Management Company</th>
+                <th>% of Portfolio</th>
+                <th>Current Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>ICICI Prudential</strong></td>
+                <td>16.95%</td>
+                <td>₹4,40,868</td>
+            </tr>
+            <tr>
+                <td><strong>SBI Mutual Fund</strong></td>
+                <td>13.60%</td>
+                <td>₹3,54,001</td>
+            </tr>
+            <tr>
+                <td><strong>Aditya Birla Sun Life</strong></td>
+                <td>9.50%</td>
+                <td>₹2,47,363</td>
+            </tr>
+            <tr>
+                <td><strong>Invesco Mutual Fund</strong></td>
+                <td>10.90%</td>
+                <td>₹2,83,527</td>
+            </tr>
+            <tr>
+                <td><strong>Nippon India</strong></td>
+                <td>3.53%</td>
+                <td>₹91,893</td>
+            </tr>
+            <tr>
+                <td><strong>Kotak Mahindra</strong></td>
+                <td>4.45%</td>
+                <td>₹1,15,863</td>
+            </tr>
+            <tr>
+                <td><strong>HDFC Mutual Fund</strong></td>
+                <td>6.98%</td>
+                <td>₹1,81,516</td>
+            </tr>
+            <tr>
+                <td><strong>Bajaj Finserv</strong></td>
+                <td>4.39%</td>
+                <td>₹1,14,064</td>
+            </tr>
+            <tr>
+                <td><strong>Motilal Oswal</strong></td>
+                <td>2.99%</td>
+                <td>₹77,841</td>
+            </tr>
+            <tr>
+                <td><strong>Axis Mutual Fund</strong></td>
+                <td>7.76%</td>
+                <td>₹2,01,975</td>
+            </tr>
+            <tr>
+                <td><strong>Tata Mutual Fund</strong></td>
+                <td>3.41%</td>
+                <td>₹88,597</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="description-box" style="margin-top: 30px;">
+        <strong>AMC Diversification Analysis:</strong> Your portfolio exhibits excellent diversification across 11 Asset Management Companies with healthy distribution. The largest holdings are with ICICI Prudential (16.95%), SBI (13.60%), and Invesco (10.90%), collectively representing 41.45% of the portfolio. No single AMC exceeds 20% concentration, indicating prudent risk distribution. This diversification protects against AMC-specific operational or governance risks while benefiting from multiple investment approaches and fund management styles.
+    </div>
+    
+    <div class="subheading" style="margin-top: 40px;">AMC Exposure Visualization</div>
+    
+    <div class="amc-chart-container">
+        <div class="chart-wrapper">
+            <canvas id="amcChart"></canvas>
+        </div>
+        <div style="padding: 20px;">
+            <div style="font-size: 13px; line-height: 1.8; color: #666;">
+                <p style="margin-bottom: 15px;">
+                    <strong>Key Insights:</strong>
+                </p>
+                <ul style="margin-left: 20px;">
+                    <li style="margin-bottom: 10px;">Top 3 AMCs account for 41.45% of portfolio</li>
+                    <li style="margin-bottom: 10px;">Top 5 AMCs account for 58.79% of portfolio</li>
+                    <li style="margin-bottom: 10px;">No single AMC exceeds 20% concentration</li>
+                    <li style="margin-bottom: 10px;">Well-diversified across quality fund houses</li>
+                    <li>Strong governance profile across all AMCs</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="page-footer">
+        <p>Portfolio Review Report | Client ABC | January 2026</p>
+    </div>
+    
+    <div class="page-number">-3 / 5-</div>
+</div>
+
+<!-- PAGE 4: MARKET CAP ALLOCATION -->
+<div class="page">
+    <div class="page-title">Market Cap Allocation Analysis</div>
+    
+    <div class="subheading">Market Capitalization Distribution</div>
+    
+    <div class="marketcap-container">
+        <div class="marketcap-pie">
+            <canvas id="marketcapChart"></canvas>
+        </div>
+        <div class="marketcap-text">
+            <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 20px; border-radius: 8px; border-left: 4px solid #2196F3;">
+                <h4 style="margin-bottom: 15px; color: #1a1a2e;">Current Allocation</h4>
+                <div class="bar-item">
+                    <div class="bar-label">
+                        <span><strong>Large Cap</strong></span>
+                        <span style="color: #2196F3; font-weight: bold;">58.3%</span>
+                    </div>
+                    <div class="bar-track">
+                        <div class="bar-fill bar-large" style="width: 58.3%;">58.3%</div>
+                    </div>
+                </div>
+                <div class="bar-item">
+                    <div class="bar-label">
+                        <span><strong>Mid Cap</strong></span>
+                        <span style="color: #4CAF50; font-weight: bold;">32.4%</span>
+                    </div>
+                    <div class="bar-track">
+                        <div class="bar-fill bar-mid" style="width: 32.4%;">32.4%</div>
+                    </div>
+                </div>
+                <div class="bar-item">
+                    <div class="bar-label">
+                        <span><strong>Small Cap</strong></span>
+                        <span style="color: #FF9800; font-weight: bold;">9.3%</span>
+                    </div>
+                    <div class="bar-track">
+                        <div class="bar-fill bar-small" style="width: 9.3%;">9.3%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="description-box">
+        <strong>Market Cap Analysis:</strong> Your equity portfolio (₹22.32 lakh) is positioned with 58.3% in large-cap stocks, 32.4% in mid-cap stocks, and 9.3% in small-cap stocks. This allocation balances growth orientation with stability, capturing upside from mid-cap outperformance while maintaining a substantial large-cap anchor for consistent returns. The positioning is aligned with current market valuations, where large-caps offer relative value, and is suitable for long-term wealth creation with controlled volatility.
+    </div>
+    
+    <div style="background: #f0f4f8; padding: 20px; border-radius: 8px; margin: 30px 0; border-left: 4px solid #FF9800;">
+        <h4 style="margin-bottom: 10px; color: #FF9800;">Strategic Rationale</h4>
+        <p style="font-size: 13px; color: #666; line-height: 1.8;">
+            The strong large-cap positioning (58.3%) provides portfolio stability and consistent dividend yields, while the 32.4% mid-cap allocation captures secular growth themes. The controlled small-cap allocation (9.3%) via UTI Small Cap Fund provides diversification without excessive valuation risk. This tri-layered approach has delivered strong risk-adjusted returns (15.56% XIRR) and is positioned well for the next market cycle.
+        </p>
+    </div>
+    
+    <div class="page-footer">
+        <p>Portfolio Review Report | Client ABC | January 2026</p>
+    </div>
+    
+    <div class="page-number">-4 / 5-</div>
+</div>
+
+<!-- PAGE 5: SUMMARY PAGE -->
+<div class="page">
+    <div class="page-title">Key Recommendations Summary</div>
+    
+    <div style="background: #e3f2fd; padding: 25px; border-radius: 8px; border-left: 4px solid #1976d2; margin-bottom: 30px;">
+        <h4 style="color: #0d47a1; margin-bottom: 15px; font-size: 14px;">✓ Recommendation 1: Phase Out Hybrid/Multi-Asset Funds</h4>
+        <p style="font-size: 13px; color: #666; line-height: 1.8;">
+            <strong>Timeline:</strong> 12-24 months<br>
+            <strong>Rationale:</strong> 14.2% allocation (₹3,69,068) conflicts with pure equity mandate. Hybrid funds structurally hold 20-35% debt.<br>
+            <strong>Tax Impact:</strong> ~₹10-16k LTCG tax spread across 3 financial years (manageable)<br>
+            <strong>Target:</strong> 100% pure equity allocation
+        </p>
+    </div>
+    
+    <div style="background: #f3e5f5; padding: 25px; border-radius: 8px; border-left: 4px solid #7b1fa2; margin-bottom: 30px;">
+        <h4 style="color: #4a148c; margin-bottom: 15px; font-size: 14px;">✓ Recommendation 2: Strengthen Large-Cap Position</h4>
+        <p style="font-size: 13px; color: #666; line-height: 1.8;">
+            <strong>Target:</strong> Increase large-cap allocation from 58.3% to 65-70% over next 12 months<br>
+            <strong>Action:</strong> Redeploy hybrid exit proceeds to Nifty 50 Index Fund + SBI Large & Midcap Fund<br>
+            <strong>Rationale:</strong> Large-cap valuations more reasonable than mid/small-caps; FII re-entry likely at this level<br>
+            <strong>Cost Savings:</strong> Add low-cost Nifty 50 index (TER 0.1%) for passive large-cap exposure
+        </p>
+    </div>
+    
+    <div style="background: #e8f5e9; padding: 25px; border-radius: 8px; border-left: 4px solid #388e3c; margin-bottom: 30px;">
+        <h4 style="color: #1b5e20; margin-bottom: 15px; font-size: 14px;">✓ Recommendation 3: Fresh Capital Deployment (₹20 Lakh)</h4>
+        <p style="font-size: 13px; color: #666; line-height: 1.8;">
+            <strong>Deployment:</strong> 60% lumpsum (₹12L) over 1-3 months + 40% SIP (₹8L) over 6-12 months<br>
+            <strong>Allocation:</strong>
+        </p>
+        <ul style="margin-left: 20px; font-size: 12px; color: #666; margin-top: 10px;">
+            <li>Large & Large+Mid: ₹9.3L (46.5%)</li>
+            <li>Midcap: ₹5.5L (27.6%)</li>
+            <li>Multicap/Flexi: ₹2.7L (13.5%)</li>
+            <li>Small Cap (SIP only): ₹1.8L (9%)</li>
+            <li>Sector/Thematic: ₹0.7L (3.4%)</li>
+        </ul>
+    </div>
+    
+    <div style="background: #fff3e0; padding: 25px; border-radius: 8px; border-left: 4px solid #f57c00;">
+        <h4 style="color: #e65100; margin-bottom: 15px; font-size: 14px;">⚠️ Recommendation 4: Freeze & Manage Axis Exposure</h4>
+        <p style="font-size: 13px; color: #666; line-height: 1.8;">
+            <strong>Action:</strong> NO fresh allocation to any Axis funds<br>
+            <strong>Status:</strong> Hold ELSS (already liquid), gradually exit Flexi Cap on tax-efficient basis<br>
+            <strong>Rationale:</strong> Front-running scandal, governance concerns, reputational damage<br>
+            <strong>Timeline:</strong> Complete exit within 2 years
+        </p>
+    </div>
+    
+    <div class="page-footer">
+        <p>Portfolio Review Report | Client ABC | January 2026</p>
+        <p>For advisory guidance, contact: advisory@bhumesh.co.in</p>
+    </div>
+    
+    <div class="page-number">-5 / 5-</div>
+</div>
+
+<script>
+// Initialize charts after DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Asset Allocation Chart
+    const assetCtx = document.getElementById('assetAllocationChart');
+    if (assetCtx) {
+        new Chart(assetCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Equity', 'Hybrid/Multi-Asset'],
+                datasets: [{
+                    data: [85.8, 14.2],
+                    backgroundColor: ['#2196F3', '#FF9800'],
+                    borderColor: ['#fff', '#fff'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    // AMC Chart
+    const amcCtx = document.getElementById('amcChart');
+    if (amcCtx) {
+        new Chart(amcCtx, {
+            type: 'bar',
+            data: {
+                labels: ['ICICI', 'SBI', 'Invesco', 'ABSL', 'Kotak', 'HDFC', 'Bajaj', 'Nippon', 'Tata', 'Axis', 'Motilal'],
+                datasets: [{
+                    label: '% of Portfolio',
+                    data: [16.95, 13.60, 10.90, 9.50, 4.45, 6.98, 4.39, 3.53, 3.41, 7.76, 2.99],
+                    backgroundColor: ['#2196F3', '#4CAF50', '#FF9800', '#9C27B0', '#F44336', '#00BCD4', '#8BC34A', '#FFC107', '#E91E63', '#795548', '#FF5722']
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 18,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    // Market Cap Chart
+    const marketCapCtx = document.getElementById('marketcapChart');
+    if (marketCapCtx) {
+        new Chart(marketCapCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Large Cap', 'Mid Cap', 'Small Cap'],
+                datasets: [{
+                    data: [58.3, 32.4, 9.3],
+                    backgroundColor: ['#2196F3', '#4CAF50', '#FF9800'],
+                    borderColor: ['#fff', '#fff', '#fff'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+});
+</script>
+
+</body>
+</html>
